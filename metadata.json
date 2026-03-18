@@ -1,0 +1,5 @@
+{
+  "name": "CertificaJus - Gerador de Certidões",
+  "description": "Gerador de certidões de comparecimento judicial com extração automática de dados via IA (OCR).",
+  "requestFramePermissions": []
+}
