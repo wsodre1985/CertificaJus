@@ -43,11 +43,11 @@ export default function App() {
     if (!file) return;
 
     setLoading(prev => ({ ...prev, [type]: true }));
-    setStatus(prev => ({ ...prev, [type]: 'Processando imagem...' }));
+    setStatus(prev => ({ ...prev, [type]: 'Processando documento...' }));
 
     try {
       const base64 = await readFileAsBase64(file);
-      const extracted = await extractDataFromImage(base64, type);
+      const extracted = await extractDataFromImage(base64, type, file.type);
 
       if (type === 'id') {
         setData(prev => ({
@@ -67,7 +67,7 @@ export default function App() {
       }
     } catch (error) {
       console.error("Erro no OCR:", error);
-      setStatus(prev => ({ ...prev, [type]: 'Erro ao processar imagem.' }));
+      setStatus(prev => ({ ...prev, [type]: 'Erro ao processar documento.' }));
     } finally {
       setLoading(prev => ({ ...prev, [type]: false }));
       setTimeout(() => setStatus(prev => ({ ...prev, [type]: '' })), 3000);
@@ -89,10 +89,11 @@ export default function App() {
 
           try {
             const base64 = await readFileAsBase64(file);
+            const mimeType = file.type || "image/png";
             
             const [idResult, warrantResult] = await Promise.all([
-              extractDataFromImage(base64, 'id').catch(() => ({})),
-              extractDataFromImage(base64, 'warrant').catch(() => ({}))
+              extractDataFromImage(base64, 'id', mimeType).catch(() => ({})),
+              extractDataFromImage(base64, 'warrant', mimeType).catch(() => ({}))
             ]);
 
             setData(prev => {
@@ -221,7 +222,7 @@ export default function App() {
                 <div className="border-2 border-dashed border-stone-200 rounded-2xl p-4 text-center hover:border-emerald-400 transition-colors relative group cursor-pointer">
                   <input 
                     type="file" 
-                    accept="image/*" 
+                    accept="image/*,application/pdf" 
                     onChange={(e) => handleFileUpload(e, 'id')}
                     className="absolute inset-0 opacity-0 cursor-pointer z-10"
                   />
@@ -233,7 +234,7 @@ export default function App() {
                   ) : (
                     <div className="flex flex-col items-center py-4">
                       <User className="text-stone-400 group-hover:text-emerald-500 mb-2" size={24} />
-                      <span className="text-xs text-stone-500">Clique ou arraste a foto do RG</span>
+                      <span className="text-xs text-stone-500">Clique ou arraste RG ou PDF</span>
                     </div>
                   )}
                 </div>
@@ -254,7 +255,7 @@ export default function App() {
                 <div className="border-2 border-dashed border-stone-200 rounded-2xl p-4 text-center hover:border-emerald-400 transition-colors relative group cursor-pointer">
                   <input 
                     type="file" 
-                    accept="image/*" 
+                    accept="image/*,application/pdf" 
                     onChange={(e) => handleFileUpload(e, 'warrant')}
                     className="absolute inset-0 opacity-0 cursor-pointer z-10"
                   />
@@ -266,7 +267,7 @@ export default function App() {
                   ) : (
                     <div className="flex flex-col items-center py-4">
                       <FileText className="text-stone-400 group-hover:text-emerald-500 mb-2" size={24} />
-                      <span className="text-xs text-stone-500">Clique ou arraste o Mandado</span>
+                      <span className="text-xs text-stone-500">Clique ou arraste Mandado ou PDF</span>
                     </div>
                   )}
                 </div>
