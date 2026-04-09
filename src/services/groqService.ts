@@ -33,13 +33,27 @@ export async function extractDataFromImage(base64Data: string, type: 'id' | 'war
           ]
         }
       ],
-      response_format: { type: "json_object" },
       temperature: 0.1
     });
 
-    return JSON.parse(response.choices[0]?.message?.content || "{}");
-  } catch (e) {
-    console.error("Erro ao processar com a API do Groq", e);
+    let content = response.choices[0]?.message?.content || "{}";
+    
+    // Clean markdown code blocks if the model wrapped the JSON
+    content = content.replace(/```json\n?/g, '').replace(/```/g, '').trim();
+
+    // Sometimes LlaMA can respond with some intro text before the JSON, find the first '{' and last '}'
+    const startIndex = content.indexOf('{');
+    const endIndex = content.lastIndexOf('}');
+    
+    if (startIndex !== -1 && endIndex !== -1) {
+      content = content.substring(startIndex, endIndex + 1);
+    }
+
+    console.log("Resposta Groq:", content);
+    return JSON.parse(content);
+  } catch (e: any) {
+    console.error("Erro ao processar com a API do Groq:");
+    console.error(e?.message || e);
     return {};
   }
 }
