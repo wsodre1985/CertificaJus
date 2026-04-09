@@ -54,6 +54,10 @@ export async function extractDataFromImage(base64Data: string, type: 'id' | 'war
   } catch (e: any) {
     console.error("Erro ao processar com a API do Groq:");
     console.error(e?.message || e);
+    // Temporary alert to debug exact error from Groq
+    if (typeof window !== 'undefined') {
+      alert("Erro do Groq: " + (e?.message || JSON.stringify(e)));
+    }
     return {};
   }
 }
