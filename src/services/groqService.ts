@@ -7,7 +7,7 @@ const apiKey = (import.meta.env?.VITE_GROQ_API_KEY) || (typeof process !== 'unde
 const groq = new Groq({ apiKey, dangerouslyAllowBrowser: true });
 
 export async function extractDataFromImage(base64Data: string, type: 'id' | 'warrant', mimeType: string = "image/jpeg"): Promise<any> {
-  const model = "llama-3.2-90b-vision-preview";
+  const model = "llama-4-scout-17b-16e-instruct";
   
   const prompt = type === 'id' 
     ? "Extraia o NOME COMPLETO e o CPF desta imagem de documento de identidade. Retorne apenas um JSON com os campos 'nome' e 'cpf'. Se não encontrar, deixe em branco."
