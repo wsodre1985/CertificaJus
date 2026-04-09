@@ -1,0 +1,45 @@
+import Groq from "groq-sdk";
+
+// Support both AI Studio Build environment and standard Vite/Vercel environment
+// @ts-ignore
+const apiKey = (import.meta.env?.VITE_GROQ_API_KEY) || (typeof process !== 'undefined' ? process.env?.GROQ_API_KEY : "") || "";
+
+const groq = new Groq({ apiKey, dangerouslyAllowBrowser: true });
+
+export async function extractDataFromImage(base64Data: string, type: 'id' | 'warrant', mimeType: string = "image/jpeg"): Promise<any> {
+  const model = "llama-3.2-90b-vision-preview";
+  
+  const prompt = type === 'id' 
+    ? "Extraia o NOME COMPLETO e o CPF desta imagem de documento de identidade. Retorne apenas um JSON com os campos 'nome' e 'cpf'. Se não encontrar, deixe em branco."
+    : "Extraia o NÚMERO DO PROCESSO JUDICIAL, a DATA da audiência e a HORA da audiência deste mandado/documento judicial. Retorne apenas um JSON com os campos 'numeroProcesso', 'dataAudiencia' (formato DD/MM/AAAA) e 'horaAudiencia' (formato HH:MM). Se não encontrar, deixe em branco.";
+
+  // Groq requires base64 images in URL format: `data:${mimeType};base64,${data}`
+  const dataUrl = base64Data.includes(',') ? base64Data : `data:${mimeType};base64,${base64Data}`;
+
+  try {
+    const response = await groq.chat.completions.create({
+      model,
+      messages: [
+        {
+          role: "user",
+          content: [
+            { type: "text", text: prompt },
+            {
+              type: "image_url",
+              image_url: {
+                url: dataUrl
+              }
+            }
+          ]
+        }
+      ],
+      response_format: { type: "json_object" },
+      temperature: 0.1
+    });
+
+    return JSON.parse(response.choices[0]?.message?.content || "{}");
+  } catch (e) {
+    console.error("Erro ao processar com a API do Groq", e);
+    return {};
+  }
+}

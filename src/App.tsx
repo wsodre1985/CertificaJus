@@ -4,7 +4,7 @@ import { motion } from 'motion/react';
 // @ts-ignore
 import html2pdf from 'html2pdf.js';
 import { CertificateData } from './types';
-import { extractDataFromImage } from './services/geminiService';
+import { extractDataFromImage } from './services/groqService';
 import { CertificatePreview } from './components/CertificatePreview';
 
 export default function App() {
