@@ -3,9 +3,10 @@ import { CertificateData } from '../types';
 
 interface Props {
   data: CertificateData;
+  mode?: 'individual' | 'lote';
 }
 
-export const CertificatePreview: React.FC<Props> = ({ data }) => {
+export const CertificatePreview: React.FC<Props> = ({ data, mode = 'individual' }) => {
   return (
     <div 
       id="certificate-to-print"
@@ -44,7 +45,7 @@ export const CertificatePreview: React.FC<Props> = ({ data }) => {
         </p>
 
         <p style={{ color: "#1f2937" }}>
-          <span className="font-bold">CERTIFICO</span>, para os devidos fins, que <span className="font-bold uppercase">{data.nome || "____________________"}</span>, CPF n.º <span className="font-bold">{data.cpf || "____________________"}</span>, compareceu, na presente data, a esta Unidade Judiciária para a Audiência de Instrução e Julgamento em <span className="font-bold">{data.dataAudiencia || "___/___/_____"}</span>, às <span className="font-bold">{data.horaAudiencia || "___:___"}</span> referente ao processo n.º <span className="font-bold">{data.numeroProcesso || "____________________"}</span>.
+          <span className="font-bold">CERTIFICO</span>, para os devidos fins, que <span className="font-bold uppercase">{data.nome || "____________________"}</span>, CPF n.º <span className="font-bold">{data.cpf || "____________________"}</span>, compareceu, na presente data, a esta Unidade Judiciária para {mode === 'lote' ? 'Sessão Plenária do Tribunal do Júri' : 'a Audiência de Instrução e Julgamento'} em <span className="font-bold">{data.dataAudiencia || "___/___/_____"}</span>, {mode === 'lote' ? 'com início às' : 'às'} <span className="font-bold">{data.horaAudiencia || "___:___"}</span> referente ao processo n.º <span className="font-bold">{data.numeroProcesso || "____________________"}</span>.
         </p>
 
         <p style={{ color: "#1f2937" }}>O referido é verdade. Dou fé.</p>
