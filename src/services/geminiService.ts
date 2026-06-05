@@ -2,7 +2,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // Environment variables
 const openRouterKey = (import.meta.env?.VITE_OPENROUTER_API_KEY) || (import.meta.env?.OPENROUTER_API_KEY) || (typeof process !== 'undefined' ? (process.env?.VITE_OPENROUTER_API_KEY || process.env?.OPENROUTER_API_KEY) : "") || "";
-const aiModel = (import.meta.env?.VITE_AI_MODEL) || (typeof process !== 'undefined' ? process.env?.VITE_AI_MODEL : "") || "openai/gpt-4o";
+const aiModel = (import.meta.env?.VITE_AI_MODEL) || (typeof process !== 'undefined' ? process.env?.VITE_AI_MODEL : "") || "openai/gpt-4o-mini";
 const geminiApiKey = (import.meta.env?.VITE_GEMINI_API_KEY) || (typeof process !== 'undefined' ? process.env?.GEMINI_API_KEY : "") || "";
 
 export const genAI = new GoogleGenerativeAI(geminiApiKey || "placeholder-key");
